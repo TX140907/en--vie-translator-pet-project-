@@ -20,9 +20,15 @@ if hasattr(sys.stdout, "reconfigure"):
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from tokenizer import build_or_load_tokenizers
-from dataset import TranslationDataset, collate_fn
-from model import TransformerSeq2Seq
+
+try:
+    from src.tokenizer import build_or_load_tokenizers
+    from src.dataset import TranslationDataset, collate_fn
+    from src.model import TransformerSeq2Seq
+except ImportError:
+    from tokenizer import build_or_load_tokenizers
+    from dataset import TranslationDataset, collate_fn
+    from model import TransformerSeq2Seq
 
 
 def test_dry_run():
@@ -47,7 +53,8 @@ def test_dry_run():
     ]
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    models_dir = os.path.join(current_dir, "models")
+    project_root = os.path.dirname(current_dir)
+    models_dir = os.path.join(project_root, "models")
 
     # 2. Test Tokenizer
     print("\n[Bước 1/4] Kiểm tra Tokenizer...")

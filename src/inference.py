@@ -33,12 +33,18 @@ try:
 except Exception:
     HAS_NLTK = False
 
-from tokenizer import TranslationTokenizer, SOS_IDX, EOS_IDX, PAD_IDX
-from dataset import create_padding_mask, create_tgt_mask
-from model import TransformerSeq2Seq
+try:
+    from src.tokenizer import TranslationTokenizer, SOS_IDX, EOS_IDX, PAD_IDX
+    from src.dataset import create_padding_mask, create_tgt_mask
+    from src.model import TransformerSeq2Seq
+except ImportError:
+    from tokenizer import TranslationTokenizer, SOS_IDX, EOS_IDX, PAD_IDX
+    from dataset import create_padding_mask, create_tgt_mask
+    from model import TransformerSeq2Seq
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_DB_PATH = os.path.join(CURRENT_DIR, "data", "dictionary_en_vi.db")
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+DEFAULT_DB_PATH = os.path.join(PROJECT_ROOT, 'data', 'dictionary_en_vi.db')
 
 # Danh mục các cặp từ trùng mặt chữ (Homographs) cần hậu xử lý thông minh
 HOMOGRAPH_CORRECTIONS = [

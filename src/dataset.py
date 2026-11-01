@@ -9,7 +9,11 @@ Hỗ trợ:
 import torch
 from torch.utils.data import Dataset
 from typing import List, Tuple
-from tokenizer import PAD_IDX, TranslationTokenizer
+
+try:
+    from src.tokenizer import PAD_IDX, TranslationTokenizer
+except ImportError:
+    from tokenizer import PAD_IDX, TranslationTokenizer
 
 
 def create_padding_mask(seq: torch.Tensor, pad_idx: int = PAD_IDX) -> torch.Tensor:

@@ -25,7 +25,10 @@ TEMPLATES_DIR = os.path.join(CURRENT_DIR, "templates")
 app = Flask(__name__, template_folder=TEMPLATES_DIR)
 
 # Khởi tạo engine dịch thuật
-from inference import TranslatorEngine
+try:
+    from src.inference import TranslatorEngine
+except ImportError:
+    from inference import TranslatorEngine
 
 MODEL_PATH = os.path.join(MODELS_DIR, "best_transformer.pt")
 TOK_EN_PATH = os.path.join(MODELS_DIR, "tokenizer_en.json")
@@ -41,7 +44,7 @@ try:
         )
         print("✅ Đã nạp thành công mô hình dịch thuật vào Web App!")
     else:
-        print("⚠️ Chưa tìm đủ 3 files trong Translator/models/ (best_transformer.pt, tokenizer_en.json, tokenizer_vi.json)")
+        print("⚠️ Chưa tìm đủ 3 files trong thư mục models/ (best_transformer.pt, tokenizer_en.json, tokenizer_vi.json)")
 except Exception as e:
     print(f"❌ Lỗi khởi động mô hình: {e}")
 

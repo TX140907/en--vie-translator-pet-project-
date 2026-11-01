@@ -20,7 +20,10 @@ if hasattr(sys.stdout, "reconfigure"):
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(CURRENT_DIR, "models")
 
-from inference import TranslatorEngine
+try:
+    from src.inference import TranslatorEngine
+except ImportError:
+    from inference import TranslatorEngine
 
 
 def main():
@@ -37,7 +40,7 @@ def main():
 
     if not os.path.exists(model_path):
         print(f"❌ [Lỗi] Không tìm thấy file trọng số: {model_path}")
-        print("Vui lòng tải file 'best_transformer.pt' từ Google Drive về thư mục Translator/models/.")
+        print("Vui lòng tải file 'best_transformer.pt' từ Google Drive về thư mục models/ (hoặc chạy python cap_nhat_mo_hinh.py).")
         sys.exit(1)
 
     print("=" * 65)

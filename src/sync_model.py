@@ -19,11 +19,12 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODELS_DIR = os.path.join(CURRENT_DIR, "models")
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 DOWNLOADS_DIR = os.path.join(os.path.expanduser("~"), "Downloads")
-DRIVE_LINK_FILE = os.path.join(CURRENT_DIR, "drive_link.txt")
+DRIVE_LINK_FILE = os.path.join(PROJECT_ROOT, "drive_link.txt")
 
 
 def free_file_locks():
@@ -122,9 +123,9 @@ def sync_from_gdrive(url: str) -> bool:
 
 
 def sync_from_downloads() -> bool:
-    """Đồng bộ từ thư mục Downloads (Ghi đè trực tiếp và dọn rác)."""
+    """Tìm trong Downloads và ghi đè trực tiếp lên models/best_transformer.pt."""
     print("\n" + "=" * 65)
-    print(" 📂 [DỰ PHÒNG] QUÉT VÀ GHI ĐÈ TỪ THƯ MỤC DOWNLOADS...")
+    print(" 📂 [DỰ PHÒNG] QUÉT FILE TỪ THƯ MỤC DOWNLOADS ĐỂ GHI ĐÈ...")
     print("=" * 65)
 
     free_file_locks()
@@ -145,7 +146,7 @@ def sync_from_downloads() -> bool:
         print(f"📦 Tìm thấy Checkpoint trong Downloads: {os.path.basename(latest_pt)} ({size_mb:.1f} MB, {dt_str})")
         # Ghi đè trực tiếp
         shutil.copy2(latest_pt, dest_pt)
-        print(f"   -> ♻️ ĐÃ GHI ĐÈ TRỰC TIẾP LÊN: Translator/models/best_transformer.pt")
+        print(f"   -> ♻️ ĐÃ GHI ĐÈ TRỰC TIẾP LÊN: models/best_transformer.pt")
         copied_count += 1
     else:
         print("⚠️ Không tìm thấy file 'best_transformer.pt' nào trong Downloads.\n")
@@ -207,9 +208,9 @@ def run_sync():
         print("\n" + "=" * 65)
         print(" ☁️ THIẾT LẬP ĐỒNG BỘ TRỰC TIẾP TỪ GOOGLE DRIVE")
         print("=" * 65)
-        print("Bạn có thể dán Link thư mục Google Drive (Translator_PhoMT) vào đây")
+        print("Bạn có thể dán Link thư mục hoặc tệp Google Drive của bạn vào đây")
         print("để hệ thống tự động tải thẳng về máy mà không cần tải thủ công.")
-        print("*(Lưu ý: Thư mục trên Drive cần bật: 'Bất kỳ ai có đường liên kết đều có thể xem')*")
+        print("*(Lưu ý: Thư mục/tệp trên Drive cần bật: 'Bất kỳ ai có đường liên kết đều có thể xem')*")
         try:
             inp = input("\nDán Link Drive vào đây (hoặc nhấn ENTER để lấy từ thư mục Downloads): ").strip()
         except (EOFError, KeyboardInterrupt):

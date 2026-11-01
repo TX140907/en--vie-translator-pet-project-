@@ -1,6 +1,6 @@
 """
 cap_nhat_mo_hinh.py: Script Python đồng bộ mô hình mới nhất - chạy trực tiếp trong PyCharm (Miễn phí 100%).
-Ưu tiên số 1: Tải trực tiếp từ Google Drive.
+Ưu tiên số 1: Tải trực tiếp từ Google Drive cá nhân của bạn (cấu hình trong drive_link.txt).
 Dự phòng: Quét thư mục Downloads.
 """
 
@@ -15,16 +15,14 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Hỗ trợ chạy dù file nằm ở Translator/ hay ở thư mục gốc project
-if os.path.basename(CURRENT_DIR).lower() == "translator":
-    TRANSLATOR_DIR = CURRENT_DIR
-else:
-    TRANSLATOR_DIR = os.path.join(CURRENT_DIR, "Translator")
+MODELS_DIR = os.path.join(CURRENT_DIR, "models")
 
-if TRANSLATOR_DIR not in sys.path:
-    sys.path.insert(0, TRANSLATOR_DIR)
-
-from sync_model import run_sync
+try:
+    from src.sync_model import run_sync
+    from src.inference import TranslatorEngine
+except ImportError:
+    from sync_model import run_sync
+    from inference import TranslatorEngine
 
 
 def main():
@@ -54,12 +52,10 @@ def main():
         import app
         app.app.run(host="127.0.0.1", port=5000, debug=False)
     elif choice == "2":
-        from inference import TranslatorEngine
-        models_dir = os.path.join(TRANSLATOR_DIR, "models")
         engine = TranslatorEngine(
-            model_path=os.path.join(models_dir, "best_transformer.pt"),
-            tokenizer_en_path=os.path.join(models_dir, "tokenizer_en.json"),
-            tokenizer_vi_path=os.path.join(models_dir, "tokenizer_vi.json")
+            model_path=os.path.join(MODELS_DIR, "best_transformer.pt"),
+            tokenizer_en_path=os.path.join(MODELS_DIR, "tokenizer_en.json"),
+            tokenizer_vi_path=os.path.join(MODELS_DIR, "tokenizer_vi.json")
         )
         print("\n" + "-" * 65)
         print("Gõ câu tiếng Anh bất kỳ để dịch (Gõ 'exit' để thoát):")
