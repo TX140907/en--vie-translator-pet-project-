@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dịch Máy Anh - Việt (Transformer from Scratch)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .badge {
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid #bfdbfe;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      margin: 32px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+    .toolbar {
+      background: #ffffff;
+      padding: 12px 20px;
+      border-radius: 12px 12px 0 0;
+      border: 1px solid #e2e8f0;
+      border-bottom: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .lang-tabs {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .arrow {
+      color: #94a3b8;
+    }
+    .settings {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+    }
+    select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .translator-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      .translator-box {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pane {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      min-height: 280px;
+      position: relative;
+    }
+    .pane-left {
+      border-right: 1px solid #e2e8f0;
+    }
+    @media (max-width: 768px) {
+      .pane-left {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+      }
+    }
+    textarea {
+      width: 100%;
+      height: 100%;
+      min-height: 200px;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #0f172a;
+      background: transparent;
+    }
+    textarea::placeholder {
+      color: #94a3b8;
+    }
+    .output-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #0f172a;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 200px;
+    }
+    .placeholder-text {
+      color: #94a3b8;
+    }
+    .bottom-bar {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+    .char-count {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #64748b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>🌐 AI Translator</span>
+      <span class="badge">Transformer Seq2Seq</span>
+    </div>
+    <div style="font-size: 13px; color: #64748b;">PyTorch from Scratch | OPUS-100 En-Vi</div>
+  </header>
+
+  <div class="container">
+    <div class="toolbar">
+      <div class="lang-tabs">
+        <span style="color: #2563eb;">Tiếng Anh (English)</span>
+        <span class="arrow">➔</span>
+        <span style="color: #059669;">Tiếng Việt</span>
+      </div>
+
+      <div class="settings">
+        <label for="mode-select">Thuật toán:</label>
+        <select id="mode-select">
+          <option value="beam" selected>Beam Search (k=4) - Mượt mà</option>
+          <option value="greedy">Greedy Search - Siêu tốc</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="translator-box">
+      <!-- Cột nhập tiếng Anh -->
+      <div class="pane pane-left">
+        <textarea id="src-text" placeholder="Nhập câu tiếng Anh bạn muốn dịch vào đây... (Ví dụ: Artificial intelligence is changing the world.)"></textarea>
+        <div class="bottom-bar">
+          <span class="char-count" id="char-count">0 ký tự</span>
+          <button class="btn btn-primary" id="btn-translate">
+            <span id="btn-text">Dịch ngay</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cột kết quả tiếng Việt -->
+      <div class="pane">
+        <div class="output-text" id="tgt-text">
+          <span class="placeholder-text">Bản dịch tiếng Việt sẽ xuất hiện ở đây...</span>
+        </div>
+        <div class="bottom-bar" style="justify-content: flex-end;">
+          <button class="btn btn-secondary" id="btn-copy">
+            📋 Sao chép
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Huấn luyện với mạng Transformer tự viết bằng PyTorch thuần | Checkpoint: <code>best_transformer.pt</code>
+  </footer>
+
+  <script>
+    const srcText = document.getElementById("src-text");
+    const tgtText = document.getElementById("tgt-text");
+    const btnTranslate = document.getElementById("btn-translate");
+    const btnText = document.getElementById("btn-text");
+    const btnCopy = document.getElementById("btn-copy");
+    const charCount = document.getElementById("char-count");
+    const modeSelect = document.getElementById("mode-select");
+
+    // Đếm ký tự
+    srcText.addEventListener("input", () => {
+      charCount.textContent = `${srcText.value.length} ký tự`;
+    });
+
+    // Xử lý phím tắt Enter (Ctrl+Enter để dịch)
+    srcText.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        doTranslate();
+      }
+    });
+
+    btnTranslate.addEventListener("click", doTranslate);
+
+    async function doTranslate() {
+      const text = srcText.value.trim();
+      if (!text) {
+        tgtText.innerHTML = '<span class="placeholder-text">Vui lòng nhập nội dung cần dịch...</span>';
+        return;
+      }
+
+      btnTranslate.disabled = true;
+      btnText.innerHTML = '<span class="loading-spinner"></span> Đang dịch...';
+      tgtText.innerHTML = '<span class="placeholder-text" style="color: #3b82f6;">Đang suy nghĩ và sinh câu...</span>';
+
+      try {
+        const response = await fetch("/api/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: text,
+            mode: modeSelect.value,
+            beam_size: 4
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          tgtText.textContent = data.translation || "(Không có kết quả)";
+        } else {
+          tgtText.innerHTML = `<span style="color: #ef4444;">Lỗi: ${data.error}</span>`;
+        }
+      } catch (err) {
+        tgtText.innerHTML = `<span style="color: #ef4444;">Không thể kết nối đến máy chủ: ${err.message}</span>`;
+      } finally {
+        btnTranslate.disabled = false;
+        btnText.textContent = "Dịch ngay";
+      }
+    }
+
+    // Sao chép kết quả
+    btnCopy.addEventListener("click", () => {
+      const result = tgtText.textContent;
+      if (result && !result.includes("Bản dịch tiếng Việt sẽ xuất hiện")) {
+        navigator.clipboard.writeText(result);
+        const originalText = btnCopy.textContent;
+        btnCopy.textContent = "✅ Đã chép!";
+        setTimeout(() => { btnCopy.textContent = originalText; }, 1800);
+      }
+    });
+  </script>
+</body>
+</html>

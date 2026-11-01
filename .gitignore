@@ -1,0 +1,44 @@
+# =====================================================================
+# BỎ QUA CÁC TỆP TIN NẶNG & DỮ LIỆU HUẤN LUYỆN NỘI BỘ (CHỈ LƯU TRÊN MÁY BẠN)
+# =====================================================================
+
+# 1. Trọng số mô hình dung lượng lớn (>250MB, vượt giới hạn 100MB của GitHub)
+# Người khác tải repo về chỉ cần chạy cap_nhat_mo_hinh.py là tự động tải weights từ Drive
+models/*.pt
+models/*.pth
+models/*.bin
+models/*.safetensors
+models/*.ckpt
+
+# 2. Tập dữ liệu huấn luyện nặng (PhoMT 170MB-1GB, CSDL, raw data)
+data/*
+!data/.gitkeep
+*.zip
+*.tar.gz
+*.db
+*.sqlite
+*.sqlite3
+
+# 3. Môi trường ảo Python & Bộ nhớ đệm biên dịch
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# 4. Trình soạn thảo & Hệ điều hành
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 5. Checkpoints & Logs tạm thời của Notebook / Colab
+.ipynb_checkpoints/
+*.log

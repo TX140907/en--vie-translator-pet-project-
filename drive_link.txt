@@ -1,0 +1,5 @@
+# Dán Link thư mục Google Drive của bạn (chế độ: Bất kỳ ai có liên kết đều có thể xem) vào đây.
+# Ví dụ:
+# https://drive.google.com/drive/folders/1ABCxyz123...
+# Nếu để trống dòng này, script sẽ tự động quét file mới nhất trong thư mục Downloads của bạn.
+https://drive.google.com/drive/folders/1S37n0rTYb1ANVz0hmQJNwXK37sSrr5jB?hl=vi
