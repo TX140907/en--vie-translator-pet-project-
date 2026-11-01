@@ -25,6 +25,7 @@ os.makedirs(MODELS_DIR, exist_ok=True)
 
 DOWNLOADS_DIR = os.path.join(os.path.expanduser("~"), "Downloads")
 DRIVE_LINK_FILE = os.path.join(PROJECT_ROOT, "drive_link.txt")
+DEFAULT_DRIVE_URL = "https://drive.google.com/drive/folders/1S37n0rTYb1ANVz0hmQJNwXK37sSrr5jB?hl=vi"
 
 
 def free_file_locks():
@@ -100,6 +101,7 @@ def sync_from_gdrive(url: str) -> bool:
     import gdown
     print("\n" + "=" * 65)
     print(" ☁️ [ƯU TIÊN 1] ĐANG TẢI VÀ GHI ĐÈ TRỰC TIẾP TỪ GOOGLE DRIVE...")
+    print(f" 🔗 Nguồn: {url}")
     print("=" * 65)
 
     free_file_locks()
@@ -203,26 +205,10 @@ def run_sync():
                     drive_url = line
                     break
 
-    # Nếu chưa có Link Drive đã lưu, hỏi người dùng
     if not drive_url:
-        print("\n" + "=" * 65)
-        print(" ☁️ THIẾT LẬP ĐỒNG BỘ TRỰC TIẾP TỪ GOOGLE DRIVE")
-        print("=" * 65)
-        print("Bạn có thể dán Link thư mục hoặc tệp Google Drive của bạn vào đây")
-        print("để hệ thống tự động tải thẳng về máy mà không cần tải thủ công.")
-        print("*(Lưu ý: Thư mục/tệp trên Drive cần bật: 'Bất kỳ ai có đường liên kết đều có thể xem')*")
-        try:
-            inp = input("\nDán Link Drive vào đây (hoặc nhấn ENTER để lấy từ thư mục Downloads): ").strip()
-        except (EOFError, KeyboardInterrupt):
-            inp = ""
+        drive_url = DEFAULT_DRIVE_URL
 
-        if inp.startswith("http"):
-            drive_url = inp
-            with open(DRIVE_LINK_FILE, "w", encoding="utf-8") as f:
-                f.write(drive_url + "\n")
-            print(f"💾 Đã lưu Link Drive! Từ lần sau hệ thống sẽ luôn tự động tải từ link này.\n")
-
-    # Ưu tiên 1: Thử tải từ Drive
+    # Ưu tiên 1: Tải trực tiếp từ Drive
     if drive_url:
         success = sync_from_gdrive(drive_url)
         if success:

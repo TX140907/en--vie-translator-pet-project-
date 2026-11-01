@@ -1,12 +1,1 @@
-# ==============================================================================
-# HƯỚNG DẪN CẤU HÌNH GOOGLE DRIVE LƯU TRỌNG SỐ MÔ HÌNH (DÀNH CHO NGƯỜI HUẤN LUYỆN)
-# ==============================================================================
-# Khi bạn huấn luyện mô hình (ví dụ trên Google Colab qua notebooks/train_colab.ipynb),
-# checkpoint "best_transformer.pt" sẽ được lưu vào Google Drive của bạn.
-#
-# Để đồng bộ trọng số về máy tính:
-# 1. Bật quyền chia sẻ của thư mục hoặc file trên Drive của bạn: "Bất kỳ ai có đường liên kết đều có thể xem" (Viewer).
-# 2. Dán link Drive đó vào dòng dưới đây.
-# 3. Chạy lệnh: python cap_nhat_mo_hinh.py
-#
-# *(Nếu bạn tự tải file best_transformer.pt về thư mục Downloads hoặc copy trực tiếp vào models/, bạn có thể để trống file này)*
+https://drive.google.com/drive/folders/1S37n0rTYb1ANVz0hmQJNwXK37sSrr5jB?hl=vi
